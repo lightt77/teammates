@@ -45,7 +45,6 @@ public class Instructor extends BaseEntity {
     @Unindex
     private String role;
 
-    @Unindex
     private Boolean isDisplayedToStudents;
 
     @Unindex
@@ -96,7 +95,7 @@ public class Instructor extends BaseEntity {
     }
 
     /**
-     * Returns the unique ID of the entity (format: googleId%courseId).
+     * Returns the unique ID of the entity (format: email%courseId).
      */
     public String getUniqueId() {
         return id;
@@ -106,7 +105,7 @@ public class Instructor extends BaseEntity {
      * Sets the unique ID for the instructor entity.
      *
      * @param uniqueId
-     *          The unique ID of the entity (format: googleId%courseId).
+     *          The unique ID of the entity (format: email%courseId).
      */
     public void setUniqueId(String uniqueId) {
         this.id = uniqueId;

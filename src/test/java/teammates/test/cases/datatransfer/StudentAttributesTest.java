@@ -12,13 +12,13 @@ import teammates.common.util.Const;
 import teammates.common.util.FieldValidator;
 import teammates.common.util.StringHelper;
 import teammates.storage.entity.CourseStudent;
-import teammates.test.cases.BaseTestCase;
+import teammates.test.cases.BaseTestCaseWithMinimalGaeEnvironment;
 import teammates.test.driver.StringHelperExtension;
 
 /**
  * SUT: {@link StudentAttributes}.
  */
-public class StudentAttributesTest extends BaseTestCase {
+public class StudentAttributesTest extends BaseTestCaseWithMinimalGaeEnvironment {
 
     @Test
     public void testBuilderWithDefaultValues() {
@@ -57,10 +57,9 @@ public class StudentAttributesTest extends BaseTestCase {
         assertNull(sd.comments);
     }
 
-    @Test(expectedExceptions = AssertionError.class)
+    @Test
     public void testBuilderWithNullValuesForRequiredFields() {
-        StudentAttributes.builder(null, null, null)
-                .build();
+        assertThrows(AssertionError.class, () -> StudentAttributes.builder(null, null, null).build());
     }
 
     @Test
@@ -316,6 +315,78 @@ public class StudentAttributesTest extends BaseTestCase {
     }
 
     @Test
+    public void testUpdateOptions_withTypicalUpdateOptions_shouldUpdateAttributeCorrectly() {
+        StudentAttributes.UpdateOptions updateOptions =
+                StudentAttributes.updateOptionsBuilder("courseId", "email@email.com")
+                        .withNewEmail("new@email.com")
+                        .withName("John Doe")
+                        .withLastName("Wu")
+                        .withComment("Comment")
+                        .withGoogleId("googleId")
+                        .withTeamName("teamName")
+                        .withSectionName("sectionName")
+                        .build();
+
+        assertEquals("courseId", updateOptions.getCourseId());
+        assertEquals("email@email.com", updateOptions.getEmail());
+
+        StudentAttributes studentAttributes =
+                StudentAttributes.builder("course", "Alice", "alice@gmail.tmt")
+                        .withLastName("Li")
+                        .withComments("Comment B")
+                        .withGoogleId("googleIdC")
+                        .withTeam("TEAM B")
+                        .withSection("Section C")
+                        .build();
+
+        // last name is specified in updateOptions, use the value.
+        studentAttributes.update(updateOptions);
+
+        assertEquals("new@email.com", studentAttributes.getEmail());
+        assertEquals("John Doe", studentAttributes.getName());
+        assertEquals("Wu", studentAttributes.getLastName());
+        assertEquals("Comment", studentAttributes.getComments());
+        assertEquals("googleId", studentAttributes.googleId);
+        assertEquals("teamName", studentAttributes.getTeam());
+        assertEquals("sectionName", studentAttributes.getSection());
+
+        updateOptions =
+                StudentAttributes.updateOptionsBuilder("courseId", "new@email.com")
+                        .withName("John Doe")
+                        .build();
+
+        // last name not specified in updateOptions, split the name.
+        studentAttributes.update(updateOptions);
+        assertEquals("Doe", studentAttributes.getLastName());
+    }
+
+    @Test
+    public void testUpdateOptionsBuilder_withNullInput_shouldFailWithAssertionError() {
+        assertThrows(AssertionError.class, () ->
+                StudentAttributes.updateOptionsBuilder(null, "email@email.com"));
+        assertThrows(AssertionError.class, () ->
+                StudentAttributes.updateOptionsBuilder("course", null));
+        assertThrows(AssertionError.class, () ->
+                StudentAttributes.updateOptionsBuilder("course", "email@email.com")
+                        .withNewEmail(null));
+        assertThrows(AssertionError.class, () ->
+                StudentAttributes.updateOptionsBuilder("course", "email@email.com")
+                        .withName(null));
+        assertThrows(AssertionError.class, () ->
+                StudentAttributes.updateOptionsBuilder("course", "email@email.com")
+                        .withLastName(null));
+        assertThrows(AssertionError.class, () ->
+                StudentAttributes.updateOptionsBuilder("course", "email@email.com")
+                        .withComment(null));
+        assertThrows(AssertionError.class, () ->
+                StudentAttributes.updateOptionsBuilder("course", "email@email.com")
+                        .withTeamName(null));
+        assertThrows(AssertionError.class, () ->
+                StudentAttributes.updateOptionsBuilder("course", "email@email.com")
+                        .withSectionName(null));
+    }
+
+    @Test
     public void testIsEnrollInfoSameAs() {
         StudentAttributes student = StudentAttributes.valueOf(generateTypicalStudentObject());
         StudentAttributes other = StudentAttributes.valueOf(generateTypicalStudentObject());
@@ -444,11 +515,12 @@ public class StudentAttributesTest extends BaseTestCase {
                 .build();
 
         sd.key = "testkey";
-        String regUrl = Config.getAppUrl(Const.ActionURIs.STUDENT_COURSE_JOIN_NEW)
-                                .withRegistrationKey(StringHelper.encrypt("testkey"))
-                                .withStudentEmail("email@email.com")
-                                .withCourseId("course1")
-                                .toString();
+        String regUrl = Config.getFrontEndAppUrl(Const.WebPageURIs.JOIN_PAGE)
+                .withRegistrationKey(StringHelper.encrypt("testkey"))
+                .withStudentEmail("email@email.com")
+                .withCourseId("course1")
+                .withParam(Const.ParamsNames.ENTITY_TYPE, Const.EntityType.STUDENT)
+                .toString();
         assertEquals(regUrl, sd.getRegistrationUrl());
     }
 
@@ -458,10 +530,10 @@ public class StudentAttributesTest extends BaseTestCase {
                 .builder("course1", "name 1", "email@email.com")
                 .withSection("sect 1").withComments("comment 1").withTeam("team 1")
                 .build();
-        String profilePicUrl = Config.getAppUrl(Const.ActionURIs.STUDENT_PROFILE_PICTURE)
-                                       .withStudentEmail(StringHelper.encrypt("email@email.com"))
-                                       .withCourseId(StringHelper.encrypt("course1"))
-                                       .toString();
+        String profilePicUrl = Config.getBackEndAppUrl(Const.ActionURIs.STUDENT_PROFILE_PICTURE)
+                .withStudentEmail(StringHelper.encrypt("email@email.com"))
+                .withCourseId(StringHelper.encrypt("course1"))
+                .toString();
         assertEquals(profilePicUrl, studentAttributes.getPublicProfilePictureUrl());
     }
 
@@ -476,6 +548,14 @@ public class StudentAttributesTest extends BaseTestCase {
                      + "\n  \"googleId\": \"\",\n  \"lastName\": \"1\","
                      + "\n  \"comments\": \"comment 1\",\n  \"team\": \"team 1\","
                      + "\n  \"section\": \"sect 1\"\n}", studentAttributes.getJsonString());
+    }
+
+    @Test
+    public void testGetBackUpIdentifier() {
+        StudentAttributes studentAttributes = generateValidStudentAttributesObject();
+        String expectedBackUpIdentifierMessage = "Recently modified student::" + studentAttributes.getId();
+
+        assertEquals(expectedBackUpIdentifierMessage, studentAttributes.getBackupIdentifier());
     }
 
     private CourseStudent generateTypicalStudentObject() {

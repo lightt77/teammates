@@ -1,5 +1,7 @@
 package teammates.test.cases.browsertests;
 
+import java.net.URL;
+
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -10,9 +12,10 @@ import teammates.common.util.AppUrl;
 import teammates.common.util.Config;
 import teammates.common.util.Const;
 import teammates.common.util.FieldValidator;
+import teammates.e2e.cases.e2e.BaseE2ETestCase;
+import teammates.e2e.util.Priority;
+import teammates.e2e.util.TestProperties;
 import teammates.test.driver.BackDoor;
-import teammates.test.driver.Priority;
-import teammates.test.driver.TestProperties;
 import teammates.test.pageobjects.AdminHomePage;
 import teammates.test.pageobjects.AppPage;
 import teammates.test.pageobjects.FeedbackSubmitPage;
@@ -29,10 +32,10 @@ import teammates.test.pageobjects.StudentHomePage;
 import teammates.test.pageobjects.StudentProfilePage;
 
 /**
- * SUT: {@link Const.ActionURIs#ADMIN_HOME_PAGE}.
+ * SUT: {@link Const.WebPageURIs#ADMIN_HOME_PAGE}.
  */
 @Priority(6)
-public class AdminHomePageUiTest extends BaseUiTestCase {
+public class AdminHomePageUiTest extends BaseE2ETestCase {
     private AdminHomePage homePage;
     private InstructorCoursesPage coursesPage;
 
@@ -57,8 +60,8 @@ public class AdminHomePageUiTest extends BaseUiTestCase {
 
         ______TS("content: typical page");
 
-        AppUrl homeUrl = createUrl(Const.ActionURIs.ADMIN_HOME_PAGE).withUserId(TestProperties.TEST_ADMIN_ACCOUNT);
-        homePage = loginAdminToPage(homeUrl, AdminHomePage.class);
+        AppUrl homeUrl = createUrl(Const.WebPageURIs.ADMIN_HOME_PAGE).withUserId(TestProperties.TEST_ADMIN_ACCOUNT);
+        homePage = loginAdminToPageOld(homeUrl, AdminHomePage.class);
 
         homePage.verifyHtml("/adminHomePage.html");
     }
@@ -83,15 +86,20 @@ public class AdminHomePageUiTest extends BaseUiTestCase {
         InstructorAttributes instructorInBackend = getInstructorWithRetry(demoCourseId, instructor.email);
         assertEquals("Instructor Details must have 3 columns", homePage.getMessageFromResultTable(1));
 
-        String encryptedKey = getKeyForInstructorWithRetry(demoCourseId, instructor.email);
-        // use AppUrl from Config because the join link takes its base URL from build.properties
-        String expectedjoinUrl = Config.getAppUrl(Const.ActionURIs.INSTRUCTOR_COURSE_JOIN)
-                                        .withRegistrationKey(encryptedKey)
-                                        .withInstructorInstitution(institute)
-                                        .toAbsoluteString();
         assertEquals("Instructor AHPUiT Instrúctör WithPlusInEmail has been successfully created " + Const.JOIN_LINK,
                 homePage.getMessageFromResultTable(2));
-        assertEquals(expectedjoinUrl, homePage.getJoinLink(homePage.getMessageFromResultTable(2)));
+
+        String encryptedKey = getKeyForInstructorWithRetry(demoCourseId, instructor.email);
+
+        String expectedjoinUrl = Config.getFrontEndAppUrl(Const.WebPageURIs.JOIN_PAGE)
+                                                        .withRegistrationKey(encryptedKey)
+                                                        .withInstructorInstitution(institute)
+                                                        .toAbsoluteString();
+        String expectedJoinLinkUrlFileName = new URL(expectedjoinUrl).getFile();
+        String actualJoinLink = homePage.getJoinLink(homePage.getMessageFromResultTable(2));
+        String actualJoinLinkUrlFileName = new URL(actualJoinLink).getFile();
+
+        assertEquals(expectedJoinLinkUrlFileName, actualJoinLinkUrlFileName);
 
         assertEquals(instructor.getName(), instructorInBackend.getName());
         assertEquals(instructor.getEmail(), instructorInBackend.getEmail());
@@ -125,16 +133,21 @@ public class AdminHomePageUiTest extends BaseUiTestCase {
 
         homePage.createInstructor(instructor, institute);
 
-        encryptedKey = getKeyForInstructorWithRetry(demoCourseId, instructor.email);
-        // use AppUrl from Config because the join link takes its base URL from build.properties
-        expectedjoinUrl = Config.getAppUrl(Const.ActionURIs.INSTRUCTOR_COURSE_JOIN)
-                                        .withRegistrationKey(encryptedKey)
-                                        .withInstructorInstitution(institute)
-                                        .toAbsoluteString();
-
         assertEquals("Instructor AHPUiT Instrúctör WithPlusInEmail has been successfully created " + Const.JOIN_LINK,
                 homePage.getMessageFromResultTable(1));
-        assertEquals(expectedjoinUrl, homePage.getJoinLink(homePage.getMessageFromResultTable(1)));
+
+        encryptedKey = getKeyForInstructorWithRetry(demoCourseId, instructor.email);
+
+        expectedjoinUrl = Config.getFrontEndAppUrl(Const.WebPageURIs.JOIN_PAGE)
+                                                        .withRegistrationKey(encryptedKey)
+                                                        .withInstructorInstitution(institute)
+                                                        .toAbsoluteString();
+        expectedJoinLinkUrlFileName = new URL(expectedjoinUrl).getFile();
+        actualJoinLink = homePage.getJoinLink(homePage.getMessageFromResultTable(1));
+        actualJoinLinkUrlFileName = new URL(actualJoinLink).getFile();
+
+        assertEquals(expectedJoinLinkUrlFileName, actualJoinLinkUrlFileName);
+
         homePage.logout();
         //verify the instructor and the demo course have been created
         assertNotNull(getCourseWithRetry(demoCourseId));
@@ -142,7 +155,7 @@ public class AdminHomePageUiTest extends BaseUiTestCase {
 
         //get the joinURL which sent to the requester's email
         String regkey = getKeyForInstructorWithRetry(demoCourseId, instructor.email);
-        String joinLink = createUrl(Const.ActionURIs.INSTRUCTOR_COURSE_JOIN)
+        String joinLink = createUrl(Const.WebPageURIs.JOIN_PAGE)
                                         .withRegistrationKey(regkey)
                                         .withInstructorInstitution(institute)
                                         .toAbsoluteString();
@@ -182,7 +195,7 @@ public class AdminHomePageUiTest extends BaseUiTestCase {
         editPage.verifyHtmlMainContent("/newlyJoinedInstructorCourseEditPage.html");
 
         ______TS("new instructor can view feedback sessions of sample course");
-        AppUrl url = createUrl(Const.ActionURIs.INSTRUCTOR_COURSES_PAGE)
+        AppUrl url = createUrl(Const.WebPageURIs.INSTRUCTOR_COURSES_PAGE)
                 .withUserId(TestProperties.TEST_INSTRUCTOR_ACCOUNT);
         coursesPage = AppPage.getNewPageInstance(browser, url, InstructorCoursesPage.class);
         coursesPage.waitForAjaxLoadCoursesSuccess();
@@ -196,8 +209,8 @@ public class AdminHomePageUiTest extends BaseUiTestCase {
 
         ______TS("action failure : trying to create instructor with an invalid email");
 
-        AppUrl homeUrl = createUrl(Const.ActionURIs.ADMIN_HOME_PAGE);
-        homePage = loginAdminToPage(homeUrl, AdminHomePage.class);
+        AppUrl homeUrl = createUrl(Const.WebPageURIs.ADMIN_HOME_PAGE);
+        homePage = loginAdminToPageOld(homeUrl, AdminHomePage.class);
 
         instructor.email = "AHPUiT.email.tmt";
         homePage.createInstructor(instructor, institute);
@@ -219,9 +232,9 @@ public class AdminHomePageUiTest extends BaseUiTestCase {
 
         //verify sample course is accessible for newly joined instructor as an student
 
-        StudentHomePage studentHomePage =
-                getHomePage().clickStudentLogin().loginAsStudent(TestProperties.TEST_INSTRUCTOR_ACCOUNT,
-                                                                 TestProperties.TEST_INSTRUCTOR_PASSWORD);
+        StudentHomePage studentHomePage = null;
+        // getHomePage().clickStudentLogin().loginAsStudent(TestProperties.TEST_INSTRUCTOR_ACCOUNT,
+        //                                                       TestProperties.TEST_INSTRUCTOR_PASSWORD);
 
         studentHomePage.verifyContains(demoCourseId);
         studentHomePage.clickViewTeam();
@@ -247,12 +260,13 @@ public class AdminHomePageUiTest extends BaseUiTestCase {
         studentHomePage.logout();
 
         //login in as instructor again to test sample course deletion
-        instructorHomePage =
-                getHomePage().clickInstructorLogin().loginAsInstructor(TestProperties.TEST_INSTRUCTOR_ACCOUNT,
-                                                                       TestProperties.TEST_INSTRUCTOR_PASSWORD);
+        instructorHomePage = null;
+        // getHomePage().clickInstructorLogin().loginAsInstructor(TestProperties.TEST_INSTRUCTOR_ACCOUNT,
+        //                                                       TestProperties.TEST_INSTRUCTOR_PASSWORD);
 
         instructorHomePage.clickAndConfirm(instructorHomePage.getDeleteCourseLink(demoCourseId));
-        assertTrue(instructorHomePage.getStatus().contains("The course " + demoCourseId + " has been deleted."));
+        assertTrue(instructorHomePage.getTextsForAllStatusMessagesToUser()
+                .contains("The course " + demoCourseId + " has been deleted. You can restore it from the 'Courses' tab."));
 
         instructorHomePage.logout();
 

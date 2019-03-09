@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.search.Document;
 import com.google.appengine.api.search.Results;
 import com.google.appengine.api.search.ScoredDocument;
@@ -21,7 +20,6 @@ import teammates.common.exception.EntityAlreadyExistsException;
 import teammates.common.exception.InvalidParametersException;
 import teammates.common.util.Assumption;
 import teammates.common.util.Const;
-import teammates.common.util.GoogleCloudStorageHelper;
 import teammates.common.util.Logger;
 import teammates.storage.entity.BaseEntity;
 import teammates.storage.search.SearchDocument;
@@ -38,19 +36,10 @@ public abstract class EntitiesDb<E extends BaseEntity, A extends EntityAttribute
     public static final String ERROR_CREATE_ENTITY_ALREADY_EXISTS = "Trying to create a %s that exists: ";
     public static final String ERROR_UPDATE_NON_EXISTENT = "Trying to update non-existent Entity: ";
     public static final String ERROR_UPDATE_NON_EXISTENT_ACCOUNT = "Trying to update non-existent Account: ";
-    public static final String ERROR_UPDATE_NON_EXISTENT_ADMIN_EMAIL = "Trying to update non-existent Admin Email: ";
     public static final String ERROR_UPDATE_NON_EXISTENT_STUDENT = "Trying to update non-existent Student: ";
     public static final String ERROR_UPDATE_NON_EXISTENT_STUDENT_PROFILE = "Trying to update non-existent Student Profile: ";
-    public static final String ERROR_UPDATE_NON_EXISTENT_COURSE = "Trying to update non-existent Course: ";
-    public static final String ERROR_UPDATE_NON_EXISTENT_INSTRUCTOR_PERMISSION =
-            "Trying to update non-existing InstructorPermission: ";
-    public static final String ERROR_UPDATE_TO_EXISTENT_INSTRUCTOR_PERMISSION =
-            "Trying to update to existent InstructorPermission: ";
-    public static final String ERROR_CREATE_INSTRUCTOR_ALREADY_EXISTS = "Trying to create a Instructor that exists: ";
-    public static final String ERROR_TRYING_TO_MAKE_NON_EXISTENT_ACCOUNT_AN_INSTRUCTOR =
-            "Trying to make an non-existent account an Instructor :";
 
-    private static final Logger log = Logger.getLogger();
+    protected static final Logger log = Logger.getLogger();
 
     /**
      * Preconditions:
@@ -58,6 +47,32 @@ public abstract class EntitiesDb<E extends BaseEntity, A extends EntityAttribute
      */
     public E createEntity(A entityToAdd) throws InvalidParametersException, EntityAlreadyExistsException {
         return createEntity(entityToAdd, true);
+    }
+
+    private E createEntity(A entityToAdd, boolean shouldCheckExistence)
+            throws InvalidParametersException, EntityAlreadyExistsException {
+        Assumption.assertNotNull(Const.StatusCodes.DBLEVEL_NULL_INPUT, entityToAdd);
+
+        entityToAdd.sanitizeForSaving();
+
+        if (!entityToAdd.isValid()) {
+            throw new InvalidParametersException(entityToAdd.getInvalidityInfo());
+        }
+
+        // TODO: Do we really need special identifiers? Can just use ToString()?
+        // Answer: Yes. We can use toString.
+        if (shouldCheckExistence && hasEntity(entityToAdd)) {
+            String error = String.format(ERROR_CREATE_ENTITY_ALREADY_EXISTS, entityToAdd.getEntityTypeAsString())
+                    + entityToAdd.getIdentificationString();
+            log.info(error);
+            throw new EntityAlreadyExistsException(error);
+        }
+
+        E entity = entityToAdd.toEntity();
+
+        saveEntity(entity, entityToAdd);
+
+        return entity;
     }
 
     public List<A> createEntities(Collection<A> entitiesToAdd) throws InvalidParametersException {
@@ -92,7 +107,6 @@ public abstract class EntitiesDb<E extends BaseEntity, A extends EntityAttribute
      *
      * @return list of created entities.
      */
-    @SuppressWarnings("PMD.UnnecessaryLocalBeforeReturn") // Needs to flush before returning
     public List<E> createEntitiesWithoutExistenceCheck(Collection<A> entitiesToAdd) throws InvalidParametersException {
         List<E> createdEntities = createEntitiesDeferred(entitiesToAdd);
         flush();
@@ -142,32 +156,6 @@ public abstract class EntitiesDb<E extends BaseEntity, A extends EntityAttribute
         }
     }
 
-    private E createEntity(A entityToAdd, boolean shouldCheckExistence)
-            throws InvalidParametersException, EntityAlreadyExistsException {
-        Assumption.assertNotNull(Const.StatusCodes.DBLEVEL_NULL_INPUT, entityToAdd);
-
-        entityToAdd.sanitizeForSaving();
-
-        if (!entityToAdd.isValid()) {
-            throw new InvalidParametersException(entityToAdd.getInvalidityInfo());
-        }
-
-        // TODO: Do we really need special identifiers? Can just use ToString()?
-        // Answer: Yes. We can use toString.
-        if (shouldCheckExistence && hasEntity(entityToAdd)) {
-            String error = String.format(ERROR_CREATE_ENTITY_ALREADY_EXISTS, entityToAdd.getEntityTypeAsString())
-                    + entityToAdd.getIdentificationString();
-            log.info(error);
-            throw new EntityAlreadyExistsException(error);
-        }
-
-        E entity = entityToAdd.toEntity();
-
-        saveEntity(entity, entityToAdd);
-
-        return entity;
-    }
-
     public void saveEntity(E entityToSave) {
         Assumption.assertNotNull(Const.StatusCodes.DBLEVEL_NULL_INPUT, entityToSave);
 
@@ -188,10 +176,6 @@ public abstract class EntitiesDb<E extends BaseEntity, A extends EntityAttribute
             log.info(attributes.getBackupIdentifier());
         }
         ofy().save().entities(entitiesToSave).now();
-    }
-
-    protected void saveEntitiesDeferred(Collection<E> entitiesToSave) {
-        saveEntitiesDeferred(entitiesToSave, makeAttributes(entitiesToSave));
     }
 
     protected void saveEntitiesDeferred(Collection<E> entitiesToSave, Collection<A> entitiesToSaveAttributesForLogging) {
@@ -242,19 +226,11 @@ public abstract class EntitiesDb<E extends BaseEntity, A extends EntityAttribute
         log.info(entityToDeleteAttributesForLogging.getBackupIdentifier());
     }
 
-    protected void deleteEntitiesDirect(Collection<E> entitiesToDelete) {
-        deleteEntitiesDirect(entitiesToDelete, makeAttributes(entitiesToDelete));
-    }
-
     protected void deleteEntitiesDirect(Collection<E> entitiesToDelete, Collection<A> entitiesToDeleteAttributesForLogging) {
         for (A attributes : entitiesToDeleteAttributesForLogging) {
             log.info(attributes.getBackupIdentifier());
         }
         ofy().delete().entities(entitiesToDelete).now();
-    }
-
-    public void deletePicture(BlobKey key) {
-        GoogleCloudStorageHelper.deleteFile(key);
     }
 
     protected abstract LoadType<E> load();
@@ -281,6 +257,14 @@ public abstract class EntitiesDb<E extends BaseEntity, A extends EntityAttribute
 
     protected abstract A makeAttributes(E entity);
 
+    protected List<A> makeAttributes(Collection<E> entities) {
+        List<A> attributes = new LinkedList<>();
+        for (E entity : entities) {
+            attributes.add(makeAttributes(entity));
+        }
+        return attributes;
+    }
+
     protected A makeAttributesOrNull(E entity) {
         return makeAttributesOrNull(entity, null);
     }
@@ -293,14 +277,6 @@ public abstract class EntitiesDb<E extends BaseEntity, A extends EntityAttribute
             log.info(logMessage);
         }
         return null;
-    }
-
-    protected List<A> makeAttributes(Collection<E> entities) {
-        List<A> attributes = new LinkedList<>();
-        for (E entity : entities) {
-            attributes.add(makeAttributes(entity));
-        }
-        return attributes;
     }
 
     protected Key<E> makeKeyOrNullFromWebSafeString(String webSafeString) {

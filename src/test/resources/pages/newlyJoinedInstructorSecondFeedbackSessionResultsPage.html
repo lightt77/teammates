@@ -27,8 +27,9 @@
               <div class="col-lg-8">
                 <p class="form-control-static">
                   Second team feedback session
-                  <a href="/page/instructorFeedbackEditPage?courseid=AHPUiT____.instr1_.gma-demo&fsname=Second+team+feedback+session&editsessiondetails=true&user=${test.instructor}">
-                    [Edit]
+                  <a data-original-title="Edit feedback session details" data-placement="top" data-toggle="tooltip" href="/page/instructorFeedbackEditPage?courseid=AHPUiT____.instr1_.gma-demo&fsname=Second+team+feedback+session&editsessiondetails=true&user=${test.instructor}" id="edit_icon_button">
+                    <span class="glyphicon glyphicon-edit">
+                    </span>
                   </a>
                 </p>
               </div>
@@ -41,11 +42,11 @@
               </label>
               <div class="col-lg-8">
                 <p class="form-control-static">
-                  Sun, 01 Apr 2012, 11:59 PM   
+                  Sun, 01 Apr 2012, 11:59 PM SGT   
                   <b>
                     to
                   </b>
-                     Thu, 02 Apr 2037, 11:59 PM
+                     Thu, 02 Apr 2037, 11:59 PM SGT
                 </p>
               </div>
             </div>
@@ -71,6 +72,7 @@
                   <input name="fsname" type="hidden" value="Second team feedback session">
                   <input name="courseid" type="hidden" value="AHPUiT____.instr1_.gma-demo">
                   <input name="sectionname" type="hidden" value="All">
+                  <input name="sectionnamedetail" type="hidden" value="NOT_APPLICABLE">
                   <input id="statsShownCheckBox" name="frshowstats" type="hidden" value="true">
                   <input name="frindicatemissingresponses" type="hidden" value="true">
                 </form>
@@ -106,6 +108,7 @@
     <input name="fsname" type="hidden" value="Second team feedback session">
     <input name="user" type="hidden" value="${test.instructor}">
     <input name="frgroupbysection" type="hidden" value="All">
+    <input name="frgroupbysectiondetail" type="hidden" value="NOT_APPLICABLE">
     <input name="csvtohtmltable" type="hidden" value="true">
   </form>
   <div class="modal fade align-center" id="fsResultsTableWindow">
@@ -141,7 +144,7 @@
             to PASTE to your Excel Workbook.
           </span>
         </div>
-        <div class="modal-body">
+        <div class="modal-body horizontal-scrollbar">
           <div class="table-responsive">
             <div id="fsModalTable">
             </div>
@@ -174,6 +177,7 @@
         <input name="frindicatemissingresponses" type="hidden" value="true">
         <input name="questionid" type="hidden" value="${question.id}">
         <input name="frgroupbysection" type="hidden" value="All">
+        <input name="frgroupbysectiondetail" type="hidden" value="NOT_APPLICABLE">
       </form>
       <div class="display-icon pull-right">
         <span class="glyphicon glyphicon-chevron-down pull-right">
@@ -187,6 +191,7 @@
         <input name="fsname" type="hidden" value="Second team feedback session">
         <input name="courseid" type="hidden" value="AHPUiT____.instr1_.gma-demo">
         <input name="sectionname" type="hidden" value="All">
+        <input name="sectionnamedetail" type="hidden" value="NOT_APPLICABLE">
         <input id="statsShownCheckBox" name="frshowstats" type="hidden" value="">
         <input name="frindicatemissingresponses" type="hidden" value="true">
         <input name="questionid" type="hidden" value="${question.id}">
@@ -229,6 +234,7 @@
         <input name="frindicatemissingresponses" type="hidden" value="true">
         <input name="questionid" type="hidden" value="${question.id}">
         <input name="frgroupbysection" type="hidden" value="All">
+        <input name="frgroupbysectiondetail" type="hidden" value="NOT_APPLICABLE">
       </form>
       <div class="display-icon pull-right">
         <span class="glyphicon glyphicon-chevron-down pull-right">
@@ -242,6 +248,7 @@
         <input name="fsname" type="hidden" value="Second team feedback session">
         <input name="courseid" type="hidden" value="AHPUiT____.instr1_.gma-demo">
         <input name="sectionname" type="hidden" value="All">
+        <input name="sectionnamedetail" type="hidden" value="NOT_APPLICABLE">
         <input id="statsShownCheckBox" name="frshowstats" type="hidden" value="">
         <input name="frindicatemissingresponses" type="hidden" value="true">
         <input name="questionid" type="hidden" value="${question.id}">
@@ -275,6 +282,7 @@
         <input name="frindicatemissingresponses" type="hidden" value="true">
         <input name="questionid" type="hidden" value="${question.id}">
         <input name="frgroupbysection" type="hidden" value="All">
+        <input name="frgroupbysectiondetail" type="hidden" value="NOT_APPLICABLE">
       </form>
       <div class="display-icon pull-right">
         <span class="glyphicon glyphicon-chevron-down pull-right">
@@ -288,6 +296,7 @@
         <input name="fsname" type="hidden" value="Second team feedback session">
         <input name="courseid" type="hidden" value="AHPUiT____.instr1_.gma-demo">
         <input name="sectionname" type="hidden" value="All">
+        <input name="sectionnamedetail" type="hidden" value="NOT_APPLICABLE">
         <input id="statsShownCheckBox" name="frshowstats" type="hidden" value="">
         <input name="frindicatemissingresponses" type="hidden" value="true">
         <input name="questionid" type="hidden" value="${question.id}">
@@ -321,6 +330,7 @@
         <input name="frindicatemissingresponses" type="hidden" value="true">
         <input name="questionid" type="hidden" value="${question.id}">
         <input name="frgroupbysection" type="hidden" value="All">
+        <input name="frgroupbysectiondetail" type="hidden" value="NOT_APPLICABLE">
       </form>
       <div class="display-icon pull-right">
         <span class="glyphicon glyphicon-chevron-down pull-right">
@@ -334,6 +344,7 @@
         <input name="fsname" type="hidden" value="Second team feedback session">
         <input name="courseid" type="hidden" value="AHPUiT____.instr1_.gma-demo">
         <input name="sectionname" type="hidden" value="All">
+        <input name="sectionnamedetail" type="hidden" value="NOT_APPLICABLE">
         <input id="statsShownCheckBox" name="frshowstats" type="hidden" value="">
         <input name="frindicatemissingresponses" type="hidden" value="true">
         <input name="questionid" type="hidden" value="${question.id}">
@@ -367,6 +378,7 @@
         <input name="frindicatemissingresponses" type="hidden" value="true">
         <input name="questionid" type="hidden" value="${question.id}">
         <input name="frgroupbysection" type="hidden" value="All">
+        <input name="frgroupbysectiondetail" type="hidden" value="NOT_APPLICABLE">
       </form>
       <div class="display-icon pull-right">
         <span class="glyphicon glyphicon-chevron-down pull-right">
@@ -380,6 +392,7 @@
         <input name="fsname" type="hidden" value="Second team feedback session">
         <input name="courseid" type="hidden" value="AHPUiT____.instr1_.gma-demo">
         <input name="sectionname" type="hidden" value="All">
+        <input name="sectionnamedetail" type="hidden" value="NOT_APPLICABLE">
         <input id="statsShownCheckBox" name="frshowstats" type="hidden" value="">
         <input name="frindicatemissingresponses" type="hidden" value="true">
         <input name="questionid" type="hidden" value="${question.id}">
@@ -415,6 +428,16 @@
                 (Select the student(s) you want to remind)
               </small>
             </h4>
+            <div>
+              <input id="remindAll" type="checkbox">
+              <label class="remind-all" for="remindAll">
+                Select all respondents
+              </label>
+              <input id="remindNotSubmitted" type="checkbox">
+              <label for="remindNotSubmitted">
+                Select all respondents not yet submitted
+              </label>
+            </div>
           </div>
           <div class="modal-body">
             <div class="form-group" id="studentList">
