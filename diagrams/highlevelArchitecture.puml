@@ -1,0 +1,43 @@
+@startuml
+!include style.puml
+skinparam minClassWidth 100
+skinparam ranksep 1
+skinparam linetype ortho
+
+!define orange E97126
+!define blue 5B7CA3
+!define lightblue 91B0D4
+!define skyblue 8CCBDB
+!define violet B2A0C4
+!define lightgreen C0D59C
+!define lightpink FEEADA
+
+actor Users #line.bold;line:blue;text:blue
+
+together {
+    rectangle container1 as " " #beige;line:transparent {
+        rectangle UI_browser as "<color:royalblue>UI (browser)\n\n<color:white>HTML,SCSS,\n<color:white>Angular\n<color:white>(TypeScript),\n<color:white>Bootstrap" #lightblue
+    }
+
+    rectangle container2 as " " #lightpink;line:transparent {
+        rectangle Common as "<color:blue>Common\n\t\t\t\t\t  <color:white>Java\t\t\t\t\t\t" #skyblue
+        rectangle UI_server as "<color:royalblue>UI\n<color:royalblue>(server)\n\n<color:white>Java\n<color:white>Servlets" #lightblue
+        rectangle Logic as "<color:darkpurple>Logic\n\n<color:white>Java" #violet
+        rectangle Storage as "<color:darkgreen>Storage\n\n<color:white>Java" #lightgreen
+    }
+
+    database db as "<color:white>PostgreSQL<color:white>" #lightgrey
+}
+
+Users <.right.> UI_browser
+UI_browser .[#blue]right.> UI_server
+UI_server .[#blue]up.> Common
+Logic .[#violet]up.> Common
+Storage .[#green]up.> Common
+Storage .[#green]down.> db : <color:green>
+UI_server .[#blue]right.> Logic
+Logic .[#violet]right.> Storage
+
+' The hidden associations are for positioning purposes only
+UI_browser -[hidden]right-> UI_server
+@enduml

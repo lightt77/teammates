@@ -1,0 +1,50 @@
+@startuml
+!include style.puml
+skinparam componentBackgroundColor MODEL_COLOR_T1
+skinparam componentFontColor #FFFFFF
+skinparam packageBackgroundColor #FFFFFF
+skinparam rectangleBackgroundColor MODEL_COLOR
+skinparam rectangleFontColor #FFFFFF
+skinparam arrowColor #000000
+
+
+component Storage {
+    package "storage::entity" as Entity {
+        rectangle Account
+        rectangle AccountRequest
+        rectangle CourseStudent
+        rectangle Instructor
+        rectangle FeedbackResponse
+        rectangle FeedbackQuestion
+        rectangle FeedbackSession
+        rectangle Course
+        rectangle "~*Entity"
+    }
+
+    package "storage::api" as Api {
+        rectangle EntitiesDb
+        rectangle CoursesDb
+        rectangle InstructorsDb
+        rectangle StudentsDb
+        rectangle " *Db" as Db
+    }
+}
+
+rectangle Logic
+database "PostgreSQL" as db STORAGE_COLOR_T1
+
+CoursesDb -> EntitiesDb
+InstructorsDb -> EntitiesDb
+StudentsDb -> EntitiesDb
+Db -> EntitiesDb
+
+Logic .down.> Api
+Api ..> Entity
+Api ..> db
+
+' The hidden associations are for positioning purposes only
+EntitiesDb -[hidden]right- InstructorsDb
+CoursesDb -[hidden]down- InstructorsDb
+InstructorsDb -[hidden]down- StudentsDb
+
+@enduml

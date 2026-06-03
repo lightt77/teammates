@@ -1,0 +1,268 @@
+{
+  "enableSearch": true,
+  "pages": [
+    {
+      "src": "best-practices/accessibility.md",
+      "title": "Best Practices: Accessibility",
+      "headings": {
+        "accessibility-best-practices": "Accessibility Best Practices",
+        "content": "Content",
+        "images-and-amp-icons": "Images &amp; Icons",
+        "keyboard": "Keyboard",
+        "controls-and-amp-inputs": "Controls &amp; Inputs"
+      },
+      "headingKeywords": {}
+    },
+    {
+      "src": "best-practices/coding.md",
+      "title": "Best Practices: Coding",
+      "headings": {
+        "coding-best-practices": "Coding Best Practices",
+        "quality": "Quality",
+        "style": "Style",
+        "refactoring": "Refactoring",
+        "code-comments": "Code Comments",
+        "issue-tracking": "Issue Tracking",
+        "revision-control": "Revision Control"
+      },
+      "headingKeywords": {}
+    },
+    {
+      "src": "best-practices/mobile-friendliness.md",
+      "title": "Best Practices: Mobile-Friendliness",
+      "headings": {
+        "mobile-friendliness-best-practices": "Mobile-Friendliness Best Practices",
+        "content": "Content",
+        "interactive-elements": "Interactive Elements"
+      },
+      "headingKeywords": {}
+    },
+    {
+      "src": "best-practices/ui-design.md",
+      "title": "Best Practices: UI Design",
+      "headings": {
+        "ui-design-best-practices": "UI Design Best Practices",
+        "be-forgiving": "Be Forgiving",
+        "be-descriptive": "Be Descriptive",
+        "minimise-user-effort": "Minimise User Effort",
+        "use-the-user-s-language": "Use the User's Language",
+        "be-consistent": "Be Consistent"
+      },
+      "headingKeywords": {}
+    },
+    {
+      "src": "contributing/development-guide.md",
+      "title": "Development Guide",
+      "headings": {
+        "development-guide": "Development Guide",
+        "running-the-frontend-server": "Running the Frontend Server",
+        "running-the-backend-server": "Running the Backend Server",
+        "serving-frontend-files-from-the-backend": "Serving frontend files from the backend",
+        "running-tests": "Running Tests",
+        "config-points": "Config Points"
+      },
+      "headingKeywords": {}
+    },
+    {
+      "src": "contributing/development-workflow.md",
+      "title": "Development Workflow",
+      "headings": {
+        "development-workflow": "Development Workflow",
+        "step-1-pick-an-issue": "Step 1: Pick an Issue",
+        "issue-labels": "Issue Labels",
+        "step-2-create-branch": "Step 2: Create Branch",
+        "step-3-fix-and-commit": "Step 3: Fix and Commit",
+        "step-4-submit-a-pr": "Step 4: Submit a PR",
+        "step-5-follow-up": "Step 5: Follow Up"
+      },
+      "headingKeywords": {}
+    },
+    {
+      "src": "contributing/guidelines.md",
+      "title": "Contributing",
+      "headings": {
+        "contributing-guidelines": "Contributing Guidelines",
+        "code-of-conduct": "Code of Conduct",
+        "how-to-contribute": "How to Contribute",
+        "submitting-an-issue": "Submitting an Issue",
+        "manual-testing": "Manual Testing",
+        "submitting-a-pull-request": "Submitting a Pull Request",
+        "first-time-contributors": "First-Time Contributors",
+        "larger-contributions": "Larger Contributions"
+      },
+      "headingKeywords": {}
+    },
+    {
+      "src": "cron-setup.md",
+      "headings": {
+        "cron-job-setup-guide": "Cron Job Setup Guide",
+        "authentication": "Authentication",
+        "timezone": "Timezone",
+        "format-1-human-readable-schedule": "Format 1: Human-Readable Schedule",
+        "format-2-copy-paste-unix-cron": "Format 2: Copy-Paste (Unix Cron)",
+        "example-google-cloud-scheduler": "Example: Google Cloud Scheduler"
+      },
+      "headingKeywords": {}
+    },
+    {
+      "src": "design/api-design.md",
+      "title": "API Design",
+      "headings": {
+        "api-design": "API Design",
+        "rest-api-design-policies": "REST API Design Policies",
+        "data-exchange": "Data Exchange",
+        "exception-handling": "Exception Handling"
+      },
+      "headingKeywords": {}
+    },
+    {
+      "src": "design/architecture.md",
+      "title": "Architecture",
+      "headings": {
+        "architecture": "Architecture",
+        "overview": "Overview",
+        "ui-component": "UI Component",
+        "request-processing": "Request Processing",
+        "template-method-pattern": "Template Method pattern",
+        "policies": "Policies",
+        "logic-component": "Logic Component",
+        "logic-api": "Logic API",
+        "policies-2": "Policies",
+        "storage-component": "Storage Component",
+        "storage-api": "Storage API",
+        "policies-3": "Policies",
+        "common-component": "Common Component"
+      },
+      "headingKeywords": {}
+    },
+    {
+      "src": "getting-started.md",
+      "title": "Getting Started",
+      "headings": {
+        "getting-started": "Getting started",
+        "prerequisites": "Prerequisites",
+        "step-1-fork-and-clone-the-repository": "Step 1: Fork and Clone the Repository",
+        "step-2-install-tools": "Step 2: Install Tools",
+        "step-3-configure-the-project": "Step 3: Configure the Project",
+        "step-3-run-the-application": "Step 3: Run the Application",
+        "step-4-set-up-test-accounts": "Step 4: Set up test accounts",
+        "step-5-next-steps": "Step 5: Next Steps"
+      },
+      "headingKeywords": {}
+    },
+    {
+      "src": "glossary.md",
+      "title": "Glossary",
+      "headings": {
+        "glossary": "Glossary",
+        "product-related": "Product-related",
+        "development-related": "Development-related"
+      },
+      "headingKeywords": {}
+    },
+    {
+      "src": "how-to/captcha.md",
+      "title": "CAPTCHA",
+      "headings": {
+        "captcha": "CAPTCHA",
+        "setup": "Setup"
+      },
+      "headingKeywords": {}
+    },
+    {
+      "src": "how-to/documentation.md",
+      "title": "Documentation",
+      "headings": {
+        "documentation": "Documentation",
+        "installation": "Installation",
+        "previewing-locally": "Previewing Locally",
+        "writing-documentation": "Writing Documentation",
+        "deployment": "Deployment"
+      },
+      "headingKeywords": {}
+    },
+    {
+      "src": "how-to/emails.md",
+      "title": "Emails",
+      "headings": {
+        "emails": "Emails",
+        "supported-services": "Supported Services",
+        "sendgrid": "SendGrid",
+        "mailjet": "Mailjet"
+      },
+      "headingKeywords": {}
+    },
+    {
+      "src": "how-to/schema-migration.md",
+      "title": "Schema Migration",
+      "headings": {
+        "schema-migration": "Schema Migration",
+        "configuration": "Configuration",
+        "applying-migrations": "Applying Migrations",
+        "generating-a-migration": "Generating a Migration",
+        "rolling-back": "Rolling Back",
+        "schema-validation-failures": "Schema Validation Failures"
+      },
+      "headingKeywords": {}
+    },
+    {
+      "src": "how-to/static-analysis.md",
+      "title": "Static Analysis",
+      "headings": {
+        "static-analysis": "Static Analysis",
+        "tool-stack": "Tool stack",
+        "suppressing-rules": "Suppressing rules",
+        "running-static-analysis": "Running static analysis"
+      },
+      "headingKeywords": {}
+    },
+    {
+      "src": "how-to/testing.md",
+      "title": "Testing",
+      "headings": {
+        "testing": "Testing",
+        "component-tests": "Component Tests",
+        "running-component-tests": "Running Component Tests",
+        "writing-component-tests": "Writing Component Tests",
+        "snapshot-testing": "Snapshot Testing",
+        "e2e-tests": "E2E Tests",
+        "prerequisites": "Prerequisites",
+        "running-e2e-tests": "Running E2E Tests",
+        "writing-e2e-tests": "Writing E2E Tests"
+      },
+      "headingKeywords": {}
+    },
+    {
+      "src": "index.md",
+      "title": "Home",
+      "headings": {
+        "teammates": "TEAMMATES",
+        "get-involved": "Get Involved",
+        "tech-stack": "Tech Stack",
+        "community-and-amp-support": "Community &amp; Support"
+      },
+      "headingKeywords": {}
+    },
+    {
+      "src": "troubleshooting-guide.md",
+      "title": "Troubleshooting Guide",
+      "headings": {
+        "developer-troubleshooting-guide": "Developer Troubleshooting Guide",
+        "common-setup-errors-and-solutions": "Common setup errors and solutions",
+        "common-test-errors-and-solutions": "Common test errors and solutions",
+        "submitting-help-request": "Submitting help request"
+      },
+      "headingKeywords": {}
+    },
+    {
+      "src": "vision-principles.md",
+      "title": "Vision & Principles",
+      "headings": {
+        "vision-and-amp-principles": "Vision &amp; Principles",
+        "vision": "Vision",
+        "principles": "Principles"
+      },
+      "headingKeywords": {}
+    }
+  ]
+}
